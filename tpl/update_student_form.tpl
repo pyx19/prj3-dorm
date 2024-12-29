@@ -6,7 +6,7 @@
   <%
   config = {
   'user': 'root',
-  'password': 'phuc0000',
+  'password': 'root',
   'host': '127.0.0.1',
   'database': 'hms',
   'raise_on_warnings': True,
@@ -84,10 +84,57 @@ cnx = mysql.connector.connect(**config)
   </div>
 
 
+  <%
+  c = cnx.cursor()
+   query="""SELECT hostel_id from student where roll_no={} """.format(roll)
+     c.execute(query)
+ 
+ 
+     result=c.fetchone()
+     c.close()
+     %>
+   <div class="row">
+     
+     
+       <label for="scon">Hostel id.</label>
+       <input class="u-full-width" type="number" id="shostel" maxlength="10" name="5" value={{result[0]}} />
+     
+   </div>
 
+   <%
+   c = cnx.cursor()
+    query="""SELECT flat from student where roll_no={} """.format(roll)
+      c.execute(query)
+  
+  
+      result=c.fetchone()
+      c.close()
+      %>
+    <div class="row">
+      
+      
+        <label for="scon">flat</label>
+        <input class="u-full-width" type="number" id="sflat" maxlength="10" name="6" value={{result[0]}} />
+      
+    </div>
 
-
-
+    <%
+    c = cnx.cursor()
+     query="""SELECT room from student where roll_no={} """.format(roll)
+       c.execute(query)
+   
+   
+       result=c.fetchone()
+       c.close()
+       %>
+     <div class="row">
+       
+       
+         <label for="scon">room number</label>
+         <input class="u-full-width" type="number" id="sroom" maxlength="10" name="7" value={{result[0]}} />
+       
+     </div>
+   
   <input class="button-primary" type="submit" name="save" value="Update">
 
 </form>

@@ -70,6 +70,7 @@
           
           
           <li class="navbar-item"><a class="navbar-link" href="/search_student">Search Students</a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/room_allocation_request">Room Allocation Request</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/courier">Courier</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>

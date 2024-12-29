@@ -12,7 +12,7 @@ from  more_itertools import unique_everseen
 
 config = {
   'user': 'root',
-  'password': 'phuc0000',
+  'password': 'root',
   'host': '127.0.0.1',
   'database': 'hms',
   'raise_on_warnings': True,
@@ -20,33 +20,14 @@ config = {
 cnx = mysql.connector.connect(**config)
 
 
-
-
-
-
 from bottle import static_file
 @route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root='static') # use static or ./static, / implies absolute path
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @route('/ajax_student_added')
 def ajax_student_added():
     return 'The new student was inserted into the database'
-
 
 @get('/')
 def just_get():
@@ -56,17 +37,9 @@ def just_get():
 def index_get():
     if(request.get_cookie("user") is None):
         redirect('/login')
-    
-
-    
-    
 
     return template('tpl/index',lolcat=request.get_cookie("user"),str="Successfully logged in as {}".format(request.get_cookie("user")))
     
-    
-
-
-
 @get('/logout')
 def logout_get():
     response.set_cookie("user","",expires=0)
@@ -76,12 +49,7 @@ def logout_get():
 
 @get('/login')
 def login_get():
-
-    
-    
-
     return template('tpl/login')
-
 
 
 @post('/login')
@@ -97,9 +65,7 @@ def login_post():
     if(request.POST.get('1')!=request.POST.get('2')):
         return {'text':"Incorrect Password"}
     else:
-        response.set_cookie("user",request.POST.get('1'))
-        #return "Successfully logged in as {}. ".format(request.POST.get('1'))
-        # return {'redirect':"/index"}
+        response.set_cookie("user",request.POST.get('1')) 
         redirect('/index')
 
 # @post('/login')
@@ -133,9 +99,231 @@ def login_post():
 #     response.set_cookie("user", roll_no, httponly=True)
 #     return {'redirect': '/index'}
         
+# @get('/room_allocation_request')
+# def room_allocation_request_get():
+#     if(request.get_cookie("user") is None):
+#         redirect('/login')
+#     if(request.get_cookie("user")!='0'):
+#         return template('tpl/room_allocation_request_s')
+    
+#     return template('tpl/room_allocation_request')
 
 
+# @post('/room_allocation_request')
+# def room_allocation_request_post():
 
+#     if(request.POST.get('10') == '1'):
+#         c=cnx.cursor()
+
+#         query=""" INSERT into complaint(roll_no,description) values ({},'{}' ) """.format(request.POST.get('1'),request.POST.get('2'))
+#         try:
+#             c.execute(query)
+#         except mysql.connector.Error as err:
+#             if err.errno == 1452:
+#                 return ("Student doesn't exist")
+#             return ("Failed adding to complaint in database: {}".format(err))
+#         cnx.commit()
+#         c.close()
+
+#         c=cnx.cursor()
+
+#         query="""SELECT * from complaint where roll_no={}  order by complaint_id desc limit 1""".format(request.POST.get('1'))
+#         try:
+#             c.execute(query)
+#         except mysql.connector.Error as err:
+#             return ("Failed fetching from  complaint from database: {}".format(err))
+#         result = c.fetchall()
+#         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+#         column_names=c.fetchall()
+#         c.close()
+
+#         output = template('tpl/only_table', rows=result,columns=column_names)
+#         return output
+
+#     elif(request.POST.get('10')=='2') :
+#         c=cnx.cursor()
+
+#         query=""" call complaint_res({},{},'{}') """.format(request.POST.get('1'),request.POST.get('2'),request.POST.get('3'))
+#         try:
+#             c.execute(query)
+#         except mysql.connector.Error as err:
+#             return ("Failed updating resolved date for complaint in database: {}".format(err))
+#         cnx.commit()
+#         c.close()
+
+#         c=cnx.cursor()
+
+#         query="""SELECT * from complaint where roll_no={} and complaint_id={} """.format(request.POST.get('1'),request.POST.get('2'))
+#         try:
+#             c.execute(query)
+#         except mysql.connector.Error as err:
+#             return ("Failed fetching complaint from database: {}".format(err))
+#         result = c.fetchall()
+#         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+#         column_names=c.fetchall()
+#         c.close()
+
+#         output = template('tpl/only_table', rows=result,columns=column_names)
+#         return output
+
+#     elif(request.POST.get('10')=='3'):
+#         c=cnx.cursor()
+
+#         if(request.POST.get('5')=='0' and request.POST.get('9')=='0' ):
+#             query="""SELECT * from complaint order by roll_no asc,complaint_id asc"""
+        
+#         elif(request.POST.get('5')=='0'  and request.POST.get('9')=='1'):
+#             query="""SELECT * from complaint where isnull(resolved_date) order by roll_no asc,complaint_id asc"""
+#         elif(request.POST.get('5')=='0' and request.POST.get('9')=='2'):
+#             query="""SELECT * from complaint where not isnull(resolved_date) order by roll_no asc,complaint_id asc"""
+#         elif(request.POST.get('5')=='1' and request.POST.get('9')=='0'):
+#             query="""SELECT * from complaint where roll_no={} order by isnull(resolved_date) desc,complaint_id desc""".format(request.POST.get('7'))
+#         elif(request.POST.get('5')=='1' and request.POST.get('9')=='1'):
+#             query="""SELECT * from complaint where roll_no={} and isnull(resolved_date) order by complaint_id desc""".format(request.POST.get('7'))
+#         elif(request.POST.get('5')=='1' and request.POST.get('9')=='2'):
+#             query="""SELECT * from complaint where roll_no={} and not isnull(resolved_date) order by complaint_id desc""".format(request.POST.get('7'))
+
+#         try:
+#             c.execute(query)
+#         except mysql.connector.Error as err:
+#             return ("Failed show_it from  complaint from database: {}".format(err))
+#         result = c.fetchall()
+#         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+#         column_names=c.fetchall()
+#         c.close()
+
+#         output = template('tpl/only_table', rows=result,columns=column_names)
+#         return output
+
+
+@get('/room_allocation_request')
+def room_allocation_request_get():
+    # Ensure user is logged in
+    if request.get_cookie("user") is None:
+        redirect('/login')
+
+    # If user == '0' => admin
+    if request.get_cookie("user") == '0':
+        return template('tpl/room_allocation_request')
+    else:
+        return template('tpl/room_allocation_request_s', rolling = request.get_cookie("user"))
+
+
+@post('/room_allocation_request')
+def room_allocation_request_post():
+    form_mode = request.POST.get('10')  # hidden field to tell us what action to do
+    c = cnx.cursor()
+
+    try:
+        if form_mode == '1':
+            # =========== INSERT A NEW ROOM REQUEST ===========
+            roll_no = request.POST.get('1')
+            # If you included hostel_id, flat, room in form
+            hostel_id = request.POST.get('2') or 'NULL'  # or some default
+            flat      = request.POST.get('3') or 'NULL'
+            room      = request.POST.get('4') or 'NULL'
+            start     = request.POST.get('30')
+            end       = request.POST.get('40')
+
+            query = """
+                INSERT INTO RoomRegistration
+                (roll_no, hostel_id, flat, room, start_date, end_date, state)
+                VALUES ({}, {}, {}, {}, '{}', '{}', 'Pending')
+            """.format(roll_no, hostel_id, flat, room, start, end)
+
+            c.execute(query)
+            cnx.commit()
+
+            # Fetch the newly inserted row (just to show user what got inserted)
+            query = """
+                SELECT * FROM RoomRegistration
+                WHERE roll_no={} ORDER BY id DESC LIMIT 1
+            """.format(roll_no)
+            c.execute(query)
+            result = c.fetchall()
+
+            # Grab column names for your only_table template
+            c.execute("SELECT column_name FROM information_schema.columns "
+                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            column_names = c.fetchall()
+
+            return template('tpl/only_table', rows=result, columns=column_names)
+
+        elif form_mode == '2':
+            # =========== UPDATE AN EXISTING REQUEST (like marking "Approved"/"Rejected") ===========
+            roll_no = request.POST.get('1')
+            req_id  = request.POST.get('2')
+            new_state = request.POST.get('3')  # e.g. "Approved", "Rejected", "Pending"
+
+            query = """
+                UPDATE RoomRegistration
+                SET state='{}'
+                WHERE roll_no={} AND id={}
+            """.format(new_state, roll_no, req_id)
+
+            c.execute(query)
+            cnx.commit()
+
+            # Return the updated row
+            query = """
+                SELECT * FROM RoomRegistration
+                WHERE roll_no={} AND id={}
+            """.format(roll_no, req_id)
+            c.execute(query)
+            result = c.fetchall()
+
+            c.execute("SELECT column_name FROM information_schema.columns "
+                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            column_names = c.fetchall()
+
+            return template('tpl/only_table', rows=result, columns=column_names)
+
+        elif form_mode == '3':
+            # =========== SEARCH/SHOW REQUESTS ===========
+            roll_filter = request.POST.get('5')  # "0" => Any roll; "1" => Specific
+            state_filter = request.POST.get('9') # "0" => Any, "1" => Pending, "2" => Approved, etc.
+            roll_no = request.POST.get('7')
+
+            # Build the query step by step
+            base_query = "SELECT * FROM RoomRegistration "
+            conditions = []
+
+            # If "roll_filter" is "1", user is searching a specific roll_no
+            if roll_filter == '1' and roll_no:
+                conditions.append(f"roll_no={roll_no}")
+
+            # If "state_filter" is "1" => show only Pending
+            # If "state_filter" is "2" => show only Approved
+            # else "0" => Any
+            if state_filter == '1':
+                conditions.append("state='Pending'")
+            elif state_filter == '2':
+                conditions.append("state='Approved'")
+
+            if conditions:
+                base_query += "WHERE " + " AND ".join(conditions)
+            
+            base_query += " ORDER BY roll_no ASC, id ASC"
+
+            c.execute(base_query)
+            result = c.fetchall()
+
+            # Fetch column names
+            c.execute("SELECT column_name FROM information_schema.columns "
+                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            column_names = c.fetchall()
+
+            return template('tpl/only_table', rows=result, columns=column_names)
+
+        else:
+            # If the hidden field is missing or something else, just do nothing or return an error
+            return "Unknown form submission."
+
+    except mysql.connector.Error as err:
+        return f"Database error: {err}"
+
+    finally:
+        c.close()
 
 @get('/next_year')
 def next_year_get():
@@ -143,9 +331,6 @@ def next_year_get():
         redirect('/login')
     if(request.get_cookie("user")!='0'):
         return "Access denied."
-
-    
-    
 
     return template('tpl/next_year')
 
@@ -160,8 +345,6 @@ def next_year_post():
     # only allow upload of text files
     if upload.content_type != 'text/plain':
         return "Only text files allowed"
-
-
 
     output="Done ."
 
@@ -182,7 +365,6 @@ def next_year_post():
     c.close()
 
 
-
     c=cnx.cursor()
 
     query="""call forward()"""
@@ -192,14 +374,9 @@ def next_year_post():
         return ("Failed forward student in database: {}".format(err))
     cnx.commit()
     c.close()
-
+    
 
     return output
-
-
-
-
-
 
 
 @get('/show_students')
@@ -221,7 +398,6 @@ def show_students():
     output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
     return output
 # note that %s evaluates to 'string' not string
-
 
 
 @get('/show_hostel')
@@ -247,15 +423,9 @@ def show_hostel():
     column_names = c.fetchall()
     cnx.commit()
     c.close()
-
     
     output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
     return output
-
-
-
-
-
 
 
 @get('/update_gate_record')
@@ -264,9 +434,6 @@ def update_gate_record_get():
         redirect('/login')
     if(request.get_cookie("user")!='0'):
         return "Access denied."
-
-    
-    
 
     return template('tpl/update_get_record',lolcat=request.get_cookie("user"))
     
@@ -749,10 +916,6 @@ def complaint_post():
             query="""SELECT * from complaint where roll_no={} and not isnull(resolved_date) order by complaint_id desc""".format(request.POST.get('7'))
         
 
-
-
-
-
         
 
         try:
@@ -1027,7 +1190,7 @@ def update_get():
 def update_post():
     c=cnx.cursor()
 
-    query=""" UPDATE `student` SET name='{}',contact_no={},address='{}',branch='{}' WHERE `roll_no`={};""".format(request.POST.get('11'),request.POST.get('2'),request.POST.get('3'),request.POST.get('4'),request.POST.get('1'))
+    query=""" UPDATE `student` SET name='{}',contact_no={},address='{}',branch='{}',hostel_id='{}',flat='{}',room='{}' WHERE `roll_no`={};""".format(request.POST.get('11'),request.POST.get('2'),request.POST.get('3'),request.POST.get('4'),request.POST.get('5'),request.POST.get('6'),request.POST.get('7'),request.POST.get('1'))
     try:
         c.execute(query)
     except mysql.connector.Error as err:
@@ -1050,16 +1213,12 @@ def update_post():
     output = template('tpl/only_table', rows=result,columns=column_names)
     
     return output
-    
 
-    
 
 
 @post('/update_student_form')
 def update_student_form():
     roll_no=request.POST.get('1')
-
-
 
     output = template('tpl/update_student_form', roll=roll_no)
     return output
@@ -1131,8 +1290,6 @@ def hd_emp():
     elif (request.POST.get('1')=='0' and request.POST.get('2')!='0' ):
         query=""" SELECT * from employee where designation='{}' order by employee_id asc""".format(request.POST.get('2'))
 
-
-
     try:
         c.execute(query)
     except mysql.connector.Error as err:
@@ -1147,12 +1304,6 @@ def hd_emp():
 
     output = template('tpl/only_table', rows=result,columns=column_names)
     return output
-
-
-
-
-
-
 
 
 
@@ -1173,12 +1324,6 @@ def namesearch_student():
 
     if(request.get_cookie("user")!='0'):
         selector='name,roll_no,year,branch,hostel_id,flat,room'
-
-
-
-    
-
-
 
     c=cnx.cursor()
 
@@ -1230,6 +1375,49 @@ def rollsearch_student():
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
 
+# @post('/roomsearch_student')
+# def roomsearch_student():
+#     selector='*'
+
+#     if(request.get_cookie("user")!='0'):
+#         selector='name,roll_no,year,branch,hostel_id,flat,room'
+
+
+#     c=cnx.cursor()
+
+#     if(request.POST.get('1')=='0' and request.POST.get('2')=='0' and request.POST.get('3')=='0') :
+#         query=""" SELECT {} from current_students """.format(selector)
+
+        
+#     elif(request.POST.get('1')!='0' and request.POST.get('2')=='0' ):
+#         query=""" SELECT {} from current_students where hostel_id={}""".format(selector,request.POST.get('1'))
+
+#     elif(request.POST.get('1')!='0' and request.POST.get('2')!='0' and request.POST.get('3')=='0' ):
+#         query=""" SELECT {} from current_students where hostel_id={} and flat={}""".format(selector,request.POST.get('1'),request.POST.get('2'))
+#     elif (request.POST.get('1')!='0' and request.POST.get('2')!='0' and request.POST.get('3')!='0' ):
+#         query=""" SELECT {} from current_students where hostel_id={} and flat={} and room='{}'""".format(selector,request.POST.get('1'),request.POST.get('2'),request.POST.get('3'))
+#     else:
+#         return "Invalid choice."
+
+
+#     try:
+#         c.execute(query)
+#     except mysql.connector.Error as err:
+#         return ("Failed searching student in database: {}".format(err))
+
+#     result=c.fetchall()
+
+#     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+#     column_names=c.fetchall()
+
+#     c.close()
+#     if(request.get_cookie("user")!='0'):
+#         column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+
+#     output = template('tpl/namesearch_student', rows=result,columns=column_names)
+#     return output
+
+
 @post('/roomsearch_student')
 def roomsearch_student():
     selector='*'
@@ -1241,19 +1429,17 @@ def roomsearch_student():
     c=cnx.cursor()
 
     if(request.POST.get('1')=='0' and request.POST.get('2')=='0' and request.POST.get('3')=='0') :
-        query=""" SELECT {} from current_students """.format(selector)
-
+        query=""" SELECT {} from student """.format(selector)
         
     elif(request.POST.get('1')!='0' and request.POST.get('2')=='0' ):
-        query=""" SELECT {} from current_students where hostel_id={}""".format(selector,request.POST.get('1'))
+        query=""" SELECT {} from student where hostel_id={}""".format(selector,request.POST.get('1'))
 
     elif(request.POST.get('1')!='0' and request.POST.get('2')!='0' and request.POST.get('3')=='0' ):
-        query=""" SELECT {} from current_students where hostel_id={} and flat={}""".format(selector,request.POST.get('1'),request.POST.get('2'))
+        query=""" SELECT {} from student where hostel_id={} and flat={}""".format(selector,request.POST.get('1'),request.POST.get('2'))
     elif (request.POST.get('1')!='0' and request.POST.get('2')!='0' and request.POST.get('3')!='0' ):
-        query=""" SELECT {} from current_students where hostel_id={} and flat={} and room='{}'""".format(selector,request.POST.get('1'),request.POST.get('2'),request.POST.get('3'))
+        query=""" SELECT {} from student where hostel_id={} and flat={} and room='{}'""".format(selector,request.POST.get('1'),request.POST.get('2'),request.POST.get('3'))
     else:
         return "Invalid choice."
-
 
     try:
         c.execute(query)
@@ -1271,8 +1457,6 @@ def roomsearch_student():
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
-    
-
 
 @error(403)
 def mistake403(code):

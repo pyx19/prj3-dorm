@@ -111,12 +111,13 @@
           </li>
           <li class="navbar-item"><a class="navbar-link" href="/update_gate_record">Gate Record</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/update_visitor">Visitor</a></li>
-          
+          <li class="navbar-item"><a class="navbar-link" href="/room_allocation_request">Room Allocation Request</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/courier">Courier</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Hostels</a></li>
-          
+           
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li> 
 
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" >Login</a></li>
@@ -125,7 +126,5 @@
         </ul>
       </div>
     </nav>
-
-
 
 <br><br><br><br><!--added-->
