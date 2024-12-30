@@ -8,7 +8,7 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Hostel Management System</title>
+  <title>Dormitory Management System</title>
   <meta name="description" content="A DBIS Project for CS 253">
   <meta name="author" content="Prathamesh Naik, 160001037">
 
@@ -58,7 +58,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="container" id="all">
     <section class="header" style="margin-top:2rem;">
-      <h2 class="title">Hostel Management System</h2>
+      <h2 class="title">Dormitory Management System</h2>
 
 
     </section>
@@ -72,9 +72,9 @@
           <li class="navbar-item"><a class="navbar-link" href="/search_student">Search Students</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/room_allocation_request">Room Allocation Request</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="/courier">Courier</a></li>
+          <!-- <li class="navbar-item"><a class="navbar-link" href="/courier">Courier</a></li> -->
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Hostels</a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Dormitory</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>

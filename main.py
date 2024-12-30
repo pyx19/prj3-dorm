@@ -207,116 +207,152 @@ def room_allocation_request_get():
         return template('tpl/room_allocation_request')
     else:
         return template('tpl/room_allocation_request_s', rolling = request.get_cookie("user"))
-
-
+    
 @post('/room_allocation_request')
 def room_allocation_request_post():
-    form_mode = request.POST.get('10')  # hidden field to tell us what action to do
+    form_mode = request.POST.get('10')  # hidden field that decides the action
     c = cnx.cursor()
 
     try:
         if form_mode == '1':
             # =========== INSERT A NEW ROOM REQUEST ===========
+
             roll_no = request.POST.get('1')
-            # If you included hostel_id, flat, room in form
-            hostel_id = request.POST.get('2') or 'NULL'  # or some default
+            hostel_id = request.POST.get('2') or 'NULL'
             flat      = request.POST.get('3') or 'NULL'
             room      = request.POST.get('4') or 'NULL'
             start     = request.POST.get('30')
             end       = request.POST.get('40')
 
-            query = """
+            query = f"""
                 INSERT INTO RoomRegistration
                 (roll_no, hostel_id, flat, room, start_date, end_date, state)
-                VALUES ({}, {}, {}, {}, '{}', '{}', 'Pending')
-            """.format(roll_no, hostel_id, flat, room, start, end)
-
+                VALUES ({roll_no}, {hostel_id}, {flat}, {room}, '{start}', '{end}', 'Pending')
+            """
             c.execute(query)
             cnx.commit()
 
-            # Fetch the newly inserted row (just to show user what got inserted)
-            query = """
+            # Fetch newly inserted row
+            query = f"""
                 SELECT * FROM RoomRegistration
-                WHERE roll_no={} ORDER BY id DESC LIMIT 1
-            """.format(roll_no)
+                WHERE roll_no={roll_no} ORDER BY id DESC LIMIT 1
+            """
             c.execute(query)
             result = c.fetchall()
 
-            # Grab column names for your only_table template
-            c.execute("SELECT column_name FROM information_schema.columns "
-                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            # Grab column names
+            c.execute("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='roomregistration' AND table_schema='hms'
+            """)
             column_names = c.fetchall()
 
             return template('tpl/only_table', rows=result, columns=column_names)
 
         elif form_mode == '2':
-            # =========== UPDATE AN EXISTING REQUEST (like marking "Approved"/"Rejected") ===========
-            roll_no = request.POST.get('1')
-            req_id  = request.POST.get('2')
-            new_state = request.POST.get('3')  # e.g. "Approved", "Rejected", "Pending"
+            # =========== UPDATE AN EXISTING REQUEST (Partial Update) ===========
+            roll_no    = request.POST.get('1')     # Roll no.
+            req_id     = request.POST.get('2')     # Request ID
+            new_state  = request.POST.get('3')     # E.g. Pending, Approved, Rejected, or blank
 
-            query = """
+            # Additional fields (hostel, flat, room) - might be blank if not updating
+            new_hostel = request.POST.get('h_id')  
+            new_flat   = request.POST.get('flt')   
+            new_room   = request.POST.get('rm')    
+
+            # Build a list of update expressions
+            fields_to_update = []
+
+            # If the user selected a state (non-empty), add to our update clause
+            if new_state:  # e.g. "Pending", "Approved", "Rejected"
+                fields_to_update.append(f"state='{new_state}'")
+
+            # Check if user gave a new hostel_id
+            # If user left it blank, skip it
+            if new_hostel is not None and new_hostel.strip() != '':
+                # If new_hostel is not purely numeric, you might need extra validation. 
+                # But assuming it's numeric or "NULL":
+                fields_to_update.append(f"hostel_id={new_hostel}")
+
+            # Check for new_flat
+            if new_flat is not None and new_flat.strip() != '':
+                fields_to_update.append(f"flat={new_flat}")
+
+            # Check for new_room
+            if new_room is not None and new_room.strip() != '':
+                fields_to_update.append(f"room={new_room}")
+
+            # If no fields to update, just return a message (or do nothing)
+            if not fields_to_update:
+                return "No fields to update."
+
+            # Build final query 
+            # Example: UPDATE RoomRegistration 
+            #          SET state='Approved', hostel_id=2 
+            #          WHERE roll_no=123 AND id=5
+            updates_str = ", ".join(fields_to_update)
+            query = f"""
                 UPDATE RoomRegistration
-                SET state='{}'
-                WHERE roll_no={} AND id={}
-            """.format(new_state, roll_no, req_id)
-
+                SET {updates_str}
+                WHERE roll_no={roll_no} AND id={req_id}
+            """
             c.execute(query)
             cnx.commit()
 
             # Return the updated row
-            query = """
+            query = f"""
                 SELECT * FROM RoomRegistration
-                WHERE roll_no={} AND id={}
-            """.format(roll_no, req_id)
+                WHERE roll_no={roll_no} AND id={req_id}
+            """
             c.execute(query)
             result = c.fetchall()
 
-            c.execute("SELECT column_name FROM information_schema.columns "
-                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            c.execute("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='roomregistration' AND table_schema='hms'
+            """)
             column_names = c.fetchall()
 
             return template('tpl/only_table', rows=result, columns=column_names)
 
         elif form_mode == '3':
             # =========== SEARCH/SHOW REQUESTS ===========
-            roll_filter = request.POST.get('5')  # "0" => Any roll; "1" => Specific
-            state_filter = request.POST.get('9') # "0" => Any, "1" => Pending, "2" => Approved, etc.
-            roll_no = request.POST.get('7')
+            roll_filter  = request.POST.get('5')  # "0" => Any roll; "1" => Specific
+            state_filter = request.POST.get('9')  # "0" => Any, "1" => Pending, "2" => Approved, etc.
+            roll_no      = request.POST.get('7')
 
-            # Build the query step by step
             base_query = "SELECT * FROM RoomRegistration "
             conditions = []
 
-            # If "roll_filter" is "1", user is searching a specific roll_no
             if roll_filter == '1' and roll_no:
                 conditions.append(f"roll_no={roll_no}")
 
-            # If "state_filter" is "1" => show only Pending
-            # If "state_filter" is "2" => show only Approved
-            # else "0" => Any
             if state_filter == '1':
                 conditions.append("state='Pending'")
             elif state_filter == '2':
                 conditions.append("state='Approved'")
+            # Could add more states (Rejected, etc.) as needed
 
             if conditions:
                 base_query += "WHERE " + " AND ".join(conditions)
-            
+
             base_query += " ORDER BY roll_no ASC, id ASC"
 
             c.execute(base_query)
             result = c.fetchall()
 
-            # Fetch column names
-            c.execute("SELECT column_name FROM information_schema.columns "
-                      "WHERE table_name='roomregistration' AND table_schema='hms'")
+            c.execute("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='roomregistration' AND table_schema='hms'
+            """)
             column_names = c.fetchall()
 
             return template('tpl/only_table', rows=result, columns=column_names)
 
         else:
-            # If the hidden field is missing or something else, just do nothing or return an error
             return "Unknown form submission."
 
     except mysql.connector.Error as err:
@@ -324,6 +360,8 @@ def room_allocation_request_post():
 
     finally:
         c.close()
+
+
 
 @get('/next_year')
 def next_year_get():

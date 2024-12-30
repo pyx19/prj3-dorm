@@ -11,8 +11,6 @@
       <label for="sroll">Roll no.</label>
       <input class="u-full-width" type="number" id="sroll" max="999999999" name="1" />
 
-      <!-- Example fields if you want to specify hostel/flat/room directly -->
-      <!-- Adjust or remove as needed -->
       <label for="hostel_id">Hostel ID</label>
       <input class="u-full-width" type="number" id="hostel_id" name="2" />
 
@@ -35,7 +33,7 @@
   <!-- RESOLVE/UPDATE REQUEST FORM -->
   <div class="four columns">
     <form id="resolve" action="/room_allocation_request" method="POST">
-      <!-- The hidden field "10" = "2" indicates an update (like 'approve' or 'resolve') -->
+      <!-- The hidden field "10" = "2" indicates an update -->
       <input type="hidden" name="10" value="2" />
 
       <label for="sroll2">Roll no.</label>
@@ -44,9 +42,24 @@
       <label for="reqid">Request ID</label>
       <input class="u-full-width" type="number" id="reqid" max="999999999" name="2"/>
 
-      <!-- Use a select or text area for the new state/remark -->
-      <label for="remark">New state (e.g. Approved / Rejected / Pending)</label>
-      <input class="u-full-width" type="text" id="remark" name="3" maxlength="20"/>
+      <!-- If admin wants to update the hostel_id, fill it in, else leave blank -->
+      <label for="hostel_id2">Hostel ID (leave blank if no change)</label>
+      <input class="u-full-width" type="number" id="hostel_id2" name="h_id" />
+
+      <label for="flat2">Flat (leave blank if no change)</label>
+      <input class="u-full-width" type="number" id="flat2" name="flt" />
+
+      <label for="room2">Room (leave blank if no change)</label>
+      <input class="u-full-width" type="number" id="room2" name="rm" />
+
+      <!-- Choose from a drop-down for the state (or leave blank if no change) -->
+      <label for="remark">New state (leave blank if no change)</label>
+      <select class="u-full-width" id="remark" name="3">
+        <option value="">(no change)</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
 
       <input class="button-primary" type="submit" value="Update request">
     </form>
@@ -65,14 +78,14 @@
       </select>
 
       <!-- Shown/hidden based on JS toggle -->
-      <input class="u-full-width" type="number" placeholder="123456789" id="ssroll" max="999999999" name="7" style="display: none;" />
+      <input class="u-full-width" type="number" placeholder="123456789"
+             id="ssroll" max="999999999" name="7" style="display: none;" />
 
       <label for="cvstatus">Request state</label>
       <select class="u-full-width" id="cvstatus" name="9">
         <option value="0">Any</option>
         <option value="1">Pending</option>
         <option value="2">Approved</option>
-        <!-- You can add "Rejected" etc. if you want more states -->
       </select>
 
       <input class="button-primary" type="submit" value="Search">
@@ -81,13 +94,14 @@
 
 </div>
 
-<div id='ajax_success' class="u-full-width"></div>
+<div id="ajax_success" class="u-full-width"></div>
 
 <script>
   $(document).ready(function() {
+    // Toggle "specific roll no" input field
     $("#croll").on('change', function() {
       $('#ssroll').toggle();
-    });   
+    });
   });
 </script>
 

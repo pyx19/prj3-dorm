@@ -8,7 +8,7 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Skeleton: Responsive CSS Boilerplate</title>
+  <title>Dormitory Management System</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -56,7 +56,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="container" id="all">
     <section class="header" style="margin-top:5rem;">
-      <h2 class="title">Hostel Management System</h2>
+      <h2 class="title">Dormitory Management System</h2>
 
 
     </section>
