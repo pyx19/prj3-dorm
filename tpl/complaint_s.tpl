@@ -138,7 +138,7 @@ $('html, body').animate({
 
   <div class="row">
     <div class="six columns">
-      <label for="sroll">Roll no.</label>
+      <label for="sroll">Student ID</label>
       <input class="u-full-width" type="number" id="sroll" maxlength="10" name="2"/>
     </div>
     <div class="six columns">
@@ -177,11 +177,16 @@ $('html, body').animate({
     <div class="six columns">
       <label for="sbranch">Branch</label>
       <select class="u-full-width" id="sbranch" name="8">
-        <option value="cse">CSE</option>
-        <option value="ee">EE</option>
-        <option value="me">ME</option>
-        <option value="ce">CE</option>
-        <option value="mems">MEMS</option>
+        <option value="sme">SME</option>
+        <option value="soict">SOICT</option>
+        <option value="seee">SEEE</option>
+        <option value="scis">SCIS</option>
+        <option value="smse">SMSE</option>
+        <option value="sem">SEM</option>
+        <option value="fami">FAMI</option>
+        <option value="sep">SEP</option>
+        <option value="sofl">SOFL</option>
+        <option value="sepd">SEPD</option>
       </select>
     </div>
   </div>
@@ -191,11 +196,11 @@ $('html, body').animate({
 
   <div class="row">
     <div class="four columns">
-      <label for="shid">Hostel </label>
+      <label for="shid">Dormitory</label>
       <select class="u-full-width" id="shid" name="9">
-          <option value="1">Hall of residences</option>
-          <option value="2">Studio Apartments</option>
-          <option value="3">Silver Springs</option>
+          <option value="1">Block A1/option>
+          <option value="2">Block A2</option>
+          <option value="3">Block A3</option>
       </select>
     </div>
     <div class="four columns">

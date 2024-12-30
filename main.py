@@ -34,15 +34,6 @@ def server_static(filepath):
 
 
 
-
-
-
-
-
-
-
-
-
 @route('/ajax_student_added')
 def ajax_student_added():
     return 'The new student was inserted into the database'
@@ -1174,12 +1165,6 @@ def namesearch_student():
     if(request.get_cookie("user")!='0'):
         selector='name,roll_no,year,branch,hostel_id,flat,room'
 
-
-
-    
-
-
-
     c=cnx.cursor()
 
     query=""" SELECT {} from current_students where name like '%{}%' """.format(selector,request.POST.get('1'))
@@ -1191,12 +1176,27 @@ def namesearch_student():
     result=c.fetchall()
 
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
-    column_names=c.fetchall()
+    column_names = c.fetchall()
+
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Roll Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
+
 
     c.close()
 
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
@@ -1221,11 +1221,27 @@ def rollsearch_student():
     result=c.fetchall()
 
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
-    column_names=c.fetchall()
+    column_names = c.fetchall()
+
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Roll Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
+
 
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
+
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
@@ -1263,11 +1279,27 @@ def roomsearch_student():
     result=c.fetchall()
 
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
-    column_names=c.fetchall()
+    column_names = c.fetchall()
+
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Roll Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
+
 
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
+
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output

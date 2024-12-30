@@ -7,7 +7,7 @@
 <div class="row">
 <div class="six columns">
 <form id="generator" action="/update_student_form" method="POST" >
-<label for="sroll">Roll no.</label>
+<label for="sroll">Student ID</label>
 
   <input class="u-full-width" type="number" id="sroll" maxlength="10" name="1"/>
   <input class="button-primary" type="submit" name="supdate" value="Update student">

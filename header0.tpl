@@ -8,9 +8,9 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Hostel Management System</title>
-  <meta name="description" content="A DBIS Project for CS 253">
-  <meta name="author" content="Prathamesh Naik, 160001037">
+  <title>HUST Dormitory Management System</title>
+  <meta name="description" content="Project 3">
+  <meta name="author" content="Vu Hoang Phuc">
 
   <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -58,7 +58,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="container" id="all">
     <section class="header" style="margin-top:2rem;">
-      <h2 class="title">Hostel Management System</h2>
+      <h2 class="title">HUST Dormitory Management System</h2>
 
 
     </section>
@@ -109,13 +109,10 @@
               </ul>
             </div>
           </li>
-          <li class="navbar-item"><a class="navbar-link" href="/update_gate_record">Gate Record</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="/update_visitor">Visitor</a></li>
           
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="/courier">Courier</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Hostels</a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Dorms</a></li>
           
 
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
