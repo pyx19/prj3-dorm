@@ -109,7 +109,7 @@
               </ul>
             </div>
           </li>
-          
+          <li class="navbar-item"><a class="navbar-link" href="/payment">Payment</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Dorms</a></li>
