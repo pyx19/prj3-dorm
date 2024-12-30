@@ -5,34 +5,21 @@ from bottle import route, run, debug, template, request, static_file, error ,get
 from bottle import default_app
 import datetime
 import mysql.connector
-import collections
-from mysql.connector import errorcode
 from  more_itertools import unique_everseen
 #current_students
 
 config = {
   'user': 'root',
-  'password': 'phuc0000',
+  'password': '123456',
   'host': '127.0.0.1',
   'database': 'hms',
-  'raise_on_warnings': True,
 }
 cnx = mysql.connector.connect(**config)
-
-
-
-
-
 
 from bottle import static_file
 @route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root='static') # use static or ./static, / implies absolute path
-
-
-
-
-
 
 @route('/ajax_student_added')
 def ajax_student_added():
@@ -47,17 +34,8 @@ def just_get():
 def index_get():
     if(request.get_cookie("user") is None):
         redirect('/login')
-    
-
-    
-    
-
     return template('tpl/index',lolcat=request.get_cookie("user"),str="Successfully logged in as {}".format(request.get_cookie("user")))
     
-    
-
-
-
 @get('/logout')
 def logout_get():
     response.set_cookie("user","",expires=0)
@@ -67,10 +45,6 @@ def logout_get():
 
 @get('/login')
 def login_get():
-
-    
-    
-
     return template('tpl/login')
 
 
@@ -92,104 +66,6 @@ def login_post():
         #return "Successfully logged in as {}. ".format(request.POST.get('1'))
         # return {'redirect':"/index"}
         redirect('/index')
-
-# @post('/login')
-# def login_post():
-#     # Open a database cursor
-#     c = cnx.cursor(dictionary=True)
-    
-#     # Get the user inputs
-#     roll_no = request.POST.get('1')
-#     password = request.POST.get('2')
-    
-#     # Check if the roll number exists and the user is active (year != '0')
-#     try:
-#         c.execute("SELECT roll_no, password FROM student WHERE roll_no = %s AND year != '0'", (roll_no,))
-#         user = c.fetchone()  # Fetch one result
-#     except mysql.connector.Error as err:
-#         return {'error': "Database error occurred."}
-
-#     c.close()  # Close the cursor
-
-#     # Validate the roll number
-#     if user is None:
-#         return {'error': "Roll number doesn't exist or the user is inactive."}
-
-#     # Validate the password (assuming `password` is stored in plaintext in the database)
-#     # For security, use password hashing (e.g., bcrypt or hashlib) for comparison
-#     if str(password) != str(user['password']):
-#         return {'error': "Incorrect Password."}
-
-#     # If login is successful, set a cookie and redirect to the index page
-#     response.set_cookie("user", roll_no, httponly=True)
-#     return {'redirect': '/index'}
-        
-
-
-
-
-@get('/next_year')
-def next_year_get():
-    if(request.get_cookie("user") is None):
-        redirect('/login')
-    if(request.get_cookie("user")!='0'):
-        return "Access denied."
-
-    
-    
-
-    return template('tpl/next_year')
-
-
-@post('/next_year')
-def next_year_post():
-    """Check to see if an uploaded file contains
-    a target string 'Bobalooba'"""
-
-    upload = request.files.get('newfile')
-
-    # only allow upload of text files
-    if upload.content_type != 'text/plain':
-        return "Only text files allowed"
-
-
-
-    output="Done ."
-
-
-    c=cnx.cursor()
-
-    for line in upload.file.readlines():
-        
-
-        query="""call fail({});""".format(line.decode())
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            output= "Failed failing  student {} in database: {} <br/>".format(line.decode(),err) + output
-    
-
-    cnx.commit()
-    c.close()
-
-
-
-    c=cnx.cursor()
-
-    query="""call forward()"""
-    try:
-        c.execute(query)
-    except mysql.connector.Error as err:
-        return ("Failed forward student in database: {}".format(err))
-    cnx.commit()
-    c.close()
-
-
-    return output
-
-
-
-
 
 
 
@@ -249,121 +125,6 @@ def show_hostel():
 
 
 
-@get('/update_gate_record')
-def update_gate_record_get():
-    if(request.get_cookie("user") is None):
-        redirect('/login')
-    if(request.get_cookie("user")!='0'):
-        return "Access denied."
-
-    
-    
-
-    return template('tpl/update_get_record',lolcat=request.get_cookie("user"))
-    
-
-@post('/update_gate_record')
-def update_gate_record_post():
-
-    if(request.POST.get('10')=='1'):
-        c=cnx.cursor()
-
-        query="""call gate_record_in({});""".format(request.POST.get('1'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed making sure not 2 null entry at same time gate_record in database: {}".format(err))
-        cnx.commit()
-        c.close()
-        c=cnx.cursor()
-
-        query=""" INSERT into gate_record(roll_no,purpose) values ({},'{}' ) """.format(request.POST.get('1'),request.POST.get('2'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            if err.errno == 1452:
-                return ("Student doesn't exist")
-    
-            return ("Failed adding gate_record in database: {}".format(err))
-        cnx.commit()
-        c.close()
-
-        c=cnx.cursor()
-
-        query="""SELECT * from gate_record where roll_no={} order by exit_time desc limit 1""".format(request.POST.get('1'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed fetching gate_record from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-
-    elif (request.POST.get('10')=='2'):
-        c=cnx.cursor()
-
-        query=""" call gate_record_in({}) """.format(request.POST.get('1'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed updating entry time for gate_record in database: {}".format(err))
-        cnx.commit()
-        c.close()
-
-        c=cnx.cursor()
-
-        query="""SELECT * from gate_record where roll_no={} order by entry_time desc,exit_time desc limit 1""".format(request.POST.get('1'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed fetching gate_record from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-    elif(request.POST.get('10')=='3'):
-        c = cnx.cursor()
-
-        if(request.POST.get('5') =='0' and request.POST.get('9') =='0'):
-            query=""" SELECT * from current_students natural join gate_record order by roll_no asc,isnull(entry_time) desc,entry_time desc """
-            
-        elif(request.POST.get('5') =='0' and request.POST.get('9') =='1'):
-            query=""" SELECT * from current_students natural join gate_record where isnull(entry_time) order by roll_no asc """
-        elif(request.POST.get('5') =='1' and request.POST.get('9') =='0'):
-            query=""" SELECT * from student natural join gate_record where roll_no={} order by isnull(entry_time) desc,entry_time desc """.format(request.POST.get('7'))
-        elif(request.POST.get('5') =='1' and request.POST.get('9') =='1'):
-            query=""" SELECT * from student natural join gate_record where roll_no={} and isnull(entry_time) order by entry_time desc """.format(request.POST.get('7'))
-
-            
-
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed fetching from  gate record case 3 from database: {}".format(err))
-        result = c.fetchall()
-
-        c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
-        column_names+=c.fetchall()
-
-        column_names=list(unique_everseen(column_names))
-        column_names[0],column_names[1]=column_names[1],column_names[0]
-
-
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-
-
 
 @get('/event')
 def event_get():
@@ -376,23 +137,11 @@ def event_get():
             c.execute(query)
         except mysql.connector.Error as err:
             return ("Failed getting hostel id  from  user: {}".format(err))
-
         result=c.fetchone();
         c.close()
-
-
-
-        
         c=cnx.cursor()
 
         query="""SELECT * from event where start_time>now() order by field(hostel_id,{},{} ,{} ) asc ,start_time desc""".format(result[0] if result[0] else 3 ,(result[0]+1)%3 if (result[0]+1)%3 else 3,(result[0]+2)%3 if (result[0]+2)%3 else 3)
-        
-        
-
-
-
-        
-
         try:
             c.execute(query)
         except mysql.connector.Error as err:
@@ -404,11 +153,6 @@ def event_get():
 
         output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
         return output
-        
-
-    
-    
-
     return template('tpl/event',lolcat=request.get_cookie("user"))
 
 
@@ -488,180 +232,14 @@ def event_post():
 
         output = template('tpl/only_table', rows=result,columns=column_names)
         return output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@get('/courier')
-def courier_get():
-    if(request.get_cookie("user") is None):
-        redirect('/login')
-    if(request.get_cookie("user")!='0'):
-
-
-
-
-        
-        c=cnx.cursor()
-
-        query="""SELECT * from courier where roll_no={} order by isnull(collected_date) desc,received_date desc""".format(request.get_cookie("user"))
-
-
-
-        
-
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed getting custom (user) courier from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
-        return output
-
-    
-    
-
-    return template('tpl/courier',lolcat=request.get_cookie("user"))
-
-@post('/courier')
-def courier_post():
-
-    if(request.POST.get('10') == '1'):
-        c=cnx.cursor()
-
-        query=""" INSERT into courier(roll_no,description) values ({},'{}' ) """.format(request.POST.get('1'),request.POST.get('2'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            #print(query)
-            if err.errno == 1452:
-                return ("Student doesn't exist")
-            return ("Failed adding to courier in database: {}".format(err))
-        cnx.commit()
-        c.close()
-
-        c=cnx.cursor()
-
-        query="""SELECT * from courier where roll_no={}  order by courier_id desc limit 1""".format(request.POST.get('1'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed fetching from  courier from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-
-    elif(request.POST.get('10')=='2') :
-        c=cnx.cursor()
-
-        query=""" call courier_col({},{}) """.format(request.POST.get('1'),request.POST.get('2'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed updating collected date for courier in database: {}".format(err))
-        cnx.commit()
-        c.close()
-
-        c=cnx.cursor()
-
-        query="""SELECT * from courier where roll_no={} and courier_id={} """.format(request.POST.get('1'),request.POST.get('2'))
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed fetching courier from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-
-    elif(request.POST.get('10')=='3'):
-        c=cnx.cursor()
-
-        if(request.POST.get('5')=='0' and request.POST.get('9')=='0' ):
-            query="""SELECT * from courier order by roll_no asc,courier_id asc"""
-        
-        elif(request.POST.get('5')=='0'  and request.POST.get('9')=='1'):
-            query="""SELECT * from courier where isnull(collected_date) order by roll_no asc,courier_id asc"""
-        elif(request.POST.get('5')=='0' and request.POST.get('9')=='2'):
-            query="""SELECT * from courier where not isnull(collected_date) order by roll_no asc,courier_id asc"""
-        elif(request.POST.get('5')=='1' and request.POST.get('9')=='0'):
-            query="""SELECT * from courier where roll_no={} order by isnull(collected_date) desc,courier_id desc""".format(request.POST.get('7'))
-        elif(request.POST.get('5')=='1' and request.POST.get('9')=='1'):
-            query="""SELECT * from courier where roll_no={} and isnull(collected_date) order by courier_id desc""".format(request.POST.get('7'))
-        elif(request.POST.get('5')=='1' and request.POST.get('9')=='2'):
-            query="""SELECT * from courier where roll_no={} and not isnull(collected_date) order by courier_id desc""".format(request.POST.get('7'))
-        
-
-
-
-
-
-        
-
-        try:
-            c.execute(query)
-        except mysql.connector.Error as err:
-            return ("Failed show_it from  courier from database: {}".format(err))
-        result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
-        column_names=c.fetchall()
-        c.close()
-
-        output = template('tpl/only_table', rows=result,columns=column_names)
-        return output
-
-
-
-
-
-
-
-
-
-
-
-
-
         
 @get('/complaint')
 def complaint_get():
     if(request.get_cookie("user") is None):
         redirect('/login')
     if(request.get_cookie("user")!='0'):
-
-
         output = template('tpl/complaint_s', rolling=request.get_cookie("user"))
         return output
-
-    
-    
-
     return template('tpl/complaint',lolcat=request.get_cookie("user"))
 
 
@@ -738,13 +316,6 @@ def complaint_post():
             query="""SELECT * from complaint where roll_no={} and isnull(resolved_date) order by complaint_id desc""".format(request.POST.get('7'))
         elif(request.POST.get('5')=='1' and request.POST.get('9')=='2'):
             query="""SELECT * from complaint where roll_no={} and not isnull(resolved_date) order by complaint_id desc""".format(request.POST.get('7'))
-        
-
-
-
-
-
-        
 
         try:
             c.execute(query)
@@ -759,52 +330,62 @@ def complaint_post():
         return output
 
 
-
-
-
-
-
-
-@get('/update_visitor')
-def update_visitor_get():
+@get('/payment')
+def payment_get():
     if(request.get_cookie("user") is None):
         redirect('/login')
     if(request.get_cookie("user")!='0'):
-        return "Access denied."
+        c=cnx.cursor()
+        query="""SELECT hostel_id from student where roll_no={}""".format(request.get_cookie("user"))
+        try:
+            c.execute(query)
+        except mysql.connector.Error as err:
+            return ("Failed getting hostel id  from  user: {}".format(err))
+        result=c.fetchone()
+        c.close()
+        c=cnx.cursor()
 
-    
-    
+        query="""SELECT * from payment where start_date>now() and student_id={} order by start_date asc""".format(request.get_cookie("user"))
+        try:
+            c.execute(query)
+        except mysql.connector.Error as err:
+            return ("Failed getting custom (user) payment from database: {}".format(err))
+        result = c.fetchall()
+        c.execute("SELECT column_name from information_schema.columns where table_name='payment' and table_schema='hms' ")
+        column_names=c.fetchall()
+        c.close()
 
-    return template('tpl/update_visitor',lolcat=request.get_cookie("user"))
+        output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
+        return output
+
+    return template('tpl/payment.tpl',lolcat=request.get_cookie("user"))
 
 
-
-
-@post('/update_visitor')
-def update_visitor_post():
+@post('/payment')
+def payment_post():
 
     if(request.POST.get('10') == '1'):
         c=cnx.cursor()
 
-        query=""" INSERT into visitor(name,roll_no,contact_no,purpose) values ('{}',{},{},'{}' ) """.format(request.POST.get('1'),request.POST.get('2'),request.POST.get('3'),request.POST.get('4'))
+        query=""" INSERT into payment(student_id,amount, start_date, end_date) values ({},'{}','{}','{}' ) """.format(request.POST.get('1'),request.POST.get('2'), request.POST.get('3'),request.POST.get('4'))
         try:
             c.execute(query)
         except mysql.connector.Error as err:
             if err.errno == 1452:
                 return ("Student doesn't exist")
-            return ("Failed adding to visitor in database: {}".format(err))
+            return ("Failed adding to payment in database: {}".format(err))
         cnx.commit()
         c.close()
 
         c=cnx.cursor()
 
-        query="""SELECT * from visitor where roll_no={}  order by entry_time desc limit 1""".format(request.POST.get('2'))
+        query="""SELECT * from payment where student_id={}  order by payment_id desc limit 1""".format(request.POST.get('1'))
         try:
             c.execute(query)
         except mysql.connector.Error as err:
-            return ("Failed fetching from  visitor from database: {}".format(err))
+            return ("Failed fetching from  payment from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='payment' and table_schema='hms'")
         column_names=c.fetchall()
         c.close()
 
@@ -813,49 +394,48 @@ def update_visitor_post():
 
     elif(request.POST.get('10')=='2') :
         c=cnx.cursor()
-
-        query=""" call visitor_out({},{}) """.format(request.POST.get('1'),request.POST.get('2'))
+        print(type(request.POST.get('3')))
+        Status = "Paid" if request.POST.get('3') == '0' else "Unpaid"
+        query="""UPDATE payment SET status = '{}' WHERE payment_id = {} and student_id = {} """.format(Status, request.POST.get('1'),request.POST.get('2'))
         try:
             c.execute(query)
         except mysql.connector.Error as err:
-            return ("Failed updating exit time for visitor in database: {}".format(err))
+            return ("Failed updating status for payment in database: {}".format(err))
         cnx.commit()
         c.close()
 
         c=cnx.cursor()
 
-        query="""SELECT * from visitor where roll_no={} and visitor_id={} """.format(request.POST.get('1'),request.POST.get('2'))
+        query="""SELECT * from payment where payment_id={} and student_id={} """.format(request.POST.get('1'),request.POST.get('2'))
         try:
             c.execute(query)
         except mysql.connector.Error as err:
-            return ("Failed fetching visitor from database: {}".format(err))
+            return ("Failed fetching payment from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='payment' and table_schema='hms'")
         column_names=c.fetchall()
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
         return output
+
     elif(request.POST.get('10')=='3'):
         c=cnx.cursor()
 
-        if(request.POST.get('5')=='0' and request.POST.get('6')=='0' and request.POST.get('9')=='0' ):
-            query="""SELECT * from visitor order by roll_no asc,visitor_id asc"""
+        if(request.POST.get('5')=='0' and request.POST.get('9')=='0' ):
+            query="""SELECT * from payment order by payment_id asc"""
         
-        elif(request.POST.get('5')=='0' and request.POST.get('6')=='0' and request.POST.get('9')=='1'):
-            query="""SELECT * from visitor where isnull(exit_time) order by roll_no asc,visitor_id asc"""
-        elif(request.POST.get('5')=='0' and request.POST.get('6')=='1' and request.POST.get('9')=='0'):
-            query="""SELECT * from visitor where name like '%{}%' order by roll_no asc,isnull(exit_time) desc, entry_time desc""".format(request.POST.get('8'))
-        elif(request.POST.get('5')=='0' and request.POST.get('6')=='1' and request.POST.get('9')=='1'):
-            query="""SELECT * from visitor where name like '%{}%' and isnull(exit_time) order by roll_no asc,isnull(exit_time) desc, entry_time desc""".format(request.POST.get('8'))
-        elif(request.POST.get('5')=='1' and request.POST.get('6')=='0' and request.POST.get('9')=='0'):
-            query="""SELECT * from visitor where roll_no={} order by isnull(exit_time) desc,entry_time desc""".format(request.POST.get('7'))
-        elif(request.POST.get('5')=='1' and request.POST.get('6')=='0' and request.POST.get('9')=='1'):
-            query="""SELECT * from visitor where roll_no={} and isnull(exit_time) order by entry_time desc""".format(request.POST.get('7'))
-        elif(request.POST.get('5')=='1' and request.POST.get('6')=='1' and request.POST.get('9')=='0'):
-            query="""SELECT * from visitor where roll_no={} and name like '%{}%' order by isnull(exit_time) desc, entry_time desc""".format(request.POST.get('7'),request.POST.get('8'))
-        elif(request.POST.get('5')=='1' and request.POST.get('6')=='1' and request.POST.get('9')=='1'):
-            query="""SELECT * from visitor where roll_no={} and name like '%{}%' and isnull(exit_time) order by entry_time desc""".format(request.POST.get('7'),request.POST.get('8'))
+        elif(request.POST.get('5')=='0'  and request.POST.get('9')=='1'):
+            query="""SELECT * from payment where status = "Paid" order by student_id asc, payment_id asc"""
+        elif(request.POST.get('5')=='0' and request.POST.get('9')=='2'):
+            query="""SELECT * from payment where status = "Unpaid" order by student_id asc, payment_id asc"""
+        elif(request.POST.get('5')=='1' and request.POST.get('9')=='0'):
+            query="""SELECT * from payment where student_id={} order by payment_id desc""".format(request.POST.get('7'))
+        elif(request.POST.get('5')=='1' and request.POST.get('9')=='1'):
+            query="""SELECT * from payment where student_id={} and status = "Paid" order by payment_id desc""".format(request.POST.get('7'))
+        elif(request.POST.get('5')=='1' and request.POST.get('9')=='2'):
+            query="""SELECT * from payment where student_id={} and status = "Unpaid" order by payment_id desc""".format(request.POST.get('7'))
+        
 
 
 
@@ -866,9 +446,9 @@ def update_visitor_post():
         try:
             c.execute(query)
         except mysql.connector.Error as err:
-            return ("Failed fetching from  visitor from database: {}".format(err))
+            return ("Failed show_it from  payment from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='payment' and table_schema='hms'")
         column_names=c.fetchall()
         c.close()
 
