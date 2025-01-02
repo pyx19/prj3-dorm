@@ -1181,7 +1181,7 @@ def namesearch_student():
     # Map database column names to custom names
     column_name_mapping = {
         'name': 'Student Name',
-        'roll_no': 'Roll Number',
+        'roll_no': 'Student ID',
         'year': 'Academic Year',
         'branch': 'Branch',
         'hostel_id': 'Hostel ID',
@@ -1196,7 +1196,7 @@ def namesearch_student():
     c.close()
 
     if(request.get_cookie("user")!='0'):
-        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
@@ -1226,7 +1226,7 @@ def rollsearch_student():
     # Map database column names to custom names
     column_name_mapping = {
         'name': 'Student Name',
-        'roll_no': 'Roll Number',
+        'roll_no': 'Student ID',
         'year': 'Academic Year',
         'branch': 'Branch',
         'hostel_id': 'Hostel ID',
@@ -1240,7 +1240,7 @@ def rollsearch_student():
 
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
@@ -1284,7 +1284,7 @@ def roomsearch_student():
     # Map database column names to custom names
     column_name_mapping = {
         'name': 'Student Name',
-        'roll_no': 'Roll Number',
+        'roll_no': 'Student ID',
         'year': 'Academic Year',
         'branch': 'Branch',
         'hostel_id': 'Hostel ID',
@@ -1298,7 +1298,7 @@ def roomsearch_student():
 
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names = [['Student Name'], ['Roll Number'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)

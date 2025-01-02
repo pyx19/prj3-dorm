@@ -78,6 +78,7 @@
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
 
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" >Login</a></li>

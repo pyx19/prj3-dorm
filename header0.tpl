@@ -113,7 +113,12 @@
           <li class="navbar-item"><a class="navbar-link" href="/complaint">Complaint</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/event">Events</a></li>
           <li class="navbar-item"><a class="navbar-link" href="/show_hostel">Dorms</a></li>
-          
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+          <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li><li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
+
 
           <li class="navbar-item"><a class="navbar-link" href="/login" ></a></li>
           <li class="navbar-item"><a class="navbar-link" href="/login" >Login</a></li>

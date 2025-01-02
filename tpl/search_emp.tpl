@@ -32,7 +32,7 @@
 
           <option value="1">Block A1</option>
           <option value="2">Block A2</option>
-          <option value="3">Block A3/option>
+          <option value="3">Block A3</option>
       </select>
     
     

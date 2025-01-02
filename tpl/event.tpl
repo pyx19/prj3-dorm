@@ -22,7 +22,7 @@
       <select class="u-full-width" id="shid" name="4">
       
 
-          <option value="1">Block A1/option>
+          <option value="1">Block A1</option>
           <option value="2">Block A2</option>
           <option value="3">Block A3</option>
       </select>
@@ -214,7 +214,7 @@ $('html, body').animate({
     <div class="four columns">
       <label for="shid">Dormitory</label>
       <select class="u-full-width" id="shid" name="9">
-          <option value="1">Block A1/option>
+          <option value="1">Block A1</option>
           <option value="2">Block A2</option>
           <option value="3">Block A3</option>
       </select>
