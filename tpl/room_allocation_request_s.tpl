@@ -18,7 +18,7 @@
 
       <!-- Possibly let them specify hostel/flat/room or do that on admin side. 
            If you want them to choose hostel etc. add more fields:
-             <label for="hostel_id">Hostel</label> 
+             <label for="hostel_id">Dormitory</label> 
              <input type="number" name="2" ... > 
            etc...
       -->

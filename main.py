@@ -12,7 +12,7 @@ from  more_itertools import unique_everseen
 
 config = {
   'user': 'root',
-  'password': 'root',
+  'password': 'phuc0000',
   'host': '127.0.0.1',
   'database': 'hms',
   'raise_on_warnings': True,
@@ -61,7 +61,7 @@ def login_post():
     
     c.close()
     if((result is None) and request.POST.get('1')!='0'):
-        return {'text':"Roll no. doesn't exist "}
+        return {'text':"Student ID doesn't exist "}
     if(request.POST.get('1')!=request.POST.get('2')):
         return {'text':"Incorrect Password"}
     else:
@@ -431,6 +431,25 @@ def show_students():
     result = c.fetchall()
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
     column_names=c.fetchall()
+
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Student ID',
+        'gender': 'Gender',
+        'address': 'Address',
+        'dob': 'Date of Birth',
+        'contact_no': 'Contact Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
+
     c.close()
 
     output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
@@ -460,6 +479,17 @@ def show_hostel():
         return ("Failed fetching column names of table hms.hostel, please make sure that it exists: {}".format(err))
     column_names = c.fetchall()
     cnx.commit()
+        # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Dormitory Name',
+        'hostel_id': 'Dormitory ID',
+        'no_rooms_available': 'Number of Available Rooms',
+        'no_students': 'Number of Students',
+        'capacity': 'Capacity'
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
     c.close()
     
     output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
@@ -591,7 +621,7 @@ def event_get():
         except mysql.connector.Error as err:
             return ("Failed getting hostel id  from  user: {}".format(err))
 
-        result=c.fetchone();
+        result=c.fetchone()
         c.close()
 
 
@@ -614,6 +644,17 @@ def event_get():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms' ")
         column_names=c.fetchall()
+        # Map database column names to custom names
+        column_name_mapping = {
+            'event_id': 'Event ID',
+            'description': 'Description',
+            'start_time': 'Start Time',
+            'expenditure': 'Expenditure',
+            'hostel_id': 'Dormitory ID',
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/make_table', rows=result,columns=column_names,lolcat=request.get_cookie("user"))
@@ -660,6 +701,17 @@ def event_post():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms'")
         column_names=c.fetchall()
+        # Map database column names to custom names
+        column_name_mapping = {
+            'event_id': 'Event ID',
+            'description': 'Description',
+            'start_time': 'Start Time',
+            'expenditure': 'Expenditure',
+            'hostel_id': 'Dormitory ID',
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
@@ -698,6 +750,17 @@ def event_post():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms'")
         column_names=c.fetchall()
+        # Map database column names to custom names
+        column_name_mapping = {
+            'event_id': 'Event ID',
+            'description': 'Description',
+            'start_time': 'Start Time',
+            'expenditure': 'Expenditure',
+            'hostel_id': 'Dormitory ID',
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
@@ -905,6 +968,17 @@ def complaint_post():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
         column_names=c.fetchall()
+        # Map database column names to custom names
+        column_name_mapping = {
+            'complaint_id': 'Complaint ID',
+            'description': 'Description',
+            'registered_date': 'Registered Date',
+            'resolved_date': 'Resolved Date',
+            'roll_no': 'Student ID'
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
@@ -931,6 +1005,16 @@ def complaint_post():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
         column_names=c.fetchall()
+        column_name_mapping = {
+            'complaint_id': 'Complaint ID',
+            'description': 'Description',
+            'registered_date': 'Registered Date',
+            'resolved_date': 'Resolved Date',
+            'roll_no': 'Student ID'
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
@@ -963,6 +1047,16 @@ def complaint_post():
         result = c.fetchall()
         c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
         column_names=c.fetchall()
+        column_name_mapping = {
+            'complaint_id': 'Complaint ID',
+            'description': 'Description',
+            'registered_date': 'Registered Date',
+            'resolved_date': 'Resolved Date',
+            'roll_no': 'Student ID'
+        }
+
+        # Apply the mapping
+        column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
         c.close()
 
         output = template('tpl/only_table', rows=result,columns=column_names)
@@ -1188,7 +1282,7 @@ def new_post():
         c.execute(query,slist)
     except mysql.connector.Error as err:
         if err.errno==1062:
-            return ("Student roll no. already exists")
+            return ("Student ID already exists")
         return ("Failed adding student to database: {}".format(err))
     
     cnx.commit()
@@ -1285,7 +1379,22 @@ def namesearch_emp():
 
     c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
     column_names=c.fetchall()
+    column_name_mapping = {
+            'address': 'Address',
+            'contact_no': 'Contact Number',
+            'date_of_joining': 'Date of Joining',
+            'designation': 'Designation',
+            'dob': 'Date of Birth',
+            'employee_id': 'Employee ID',
+            'gender': 'Gender',
+            'hostel_id': 'Dormitory ID',
+            'name': 'Name',
+            'salary': 'Salary',
+            'termination_date': 'Termination Date',
+        }
 
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
     c.close()
 
     output = template('tpl/only_table', rows=result,columns=column_names)
@@ -1306,7 +1415,22 @@ def idsearch_emp():
 
     c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
     column_names=c.fetchall()
+    column_name_mapping = {
+            'address': 'Address',
+            'contact_no': 'Contact Number',
+            'date_of_joining': 'Date of Joining',
+            'designation': 'Designation',
+            'dob': 'Date of Birth',
+            'employee_id': 'Employee ID',
+            'gender': 'Gender',
+            'hostel_id': 'Dormitory ID',
+            'name': 'Name',
+            'salary': 'Salary',
+            'termination_date': 'Termination Date',
+        }
 
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
     c.close()
 
     output = template('tpl/only_table', rows=result,columns=column_names)
@@ -1337,7 +1461,22 @@ def hd_emp():
 
     c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
     column_names=c.fetchall()
+    column_name_mapping = {
+            'address': 'Address',
+            'contact_no': 'Contact Number',
+            'date_of_joining': 'Date of Joining',
+            'designation': 'Designation',
+            'dob': 'Date of Birth',
+            'employee_id': 'Employee ID',
+            'gender': 'Gender',
+            'hostel_id': 'Dormitory ID',
+            'name': 'Name',
+            'salary': 'Salary',
+            'termination_date': 'Termination Date',
+        }
 
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
     c.close()
 
     output = template('tpl/only_table', rows=result,columns=column_names)
@@ -1376,10 +1515,28 @@ def namesearch_student():
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
     column_names=c.fetchall()
 
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Student ID',
+        'gender': 'Gender',
+        'address': 'Address',
+        'dob': 'Date of Birth',
+        'contact_no': 'Contact Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
     c.close()
 
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        # column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
@@ -1405,10 +1562,27 @@ def rollsearch_student():
 
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
     column_names=c.fetchall()
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Student ID',
+        'gender': 'Gender',
+        'address': 'Address',
+        'dob': 'Date of Birth',
+        'contact_no': 'Contact Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
 
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        # column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output
@@ -1489,9 +1663,28 @@ def roomsearch_student():
     c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
     column_names=c.fetchall()
 
+    # Map database column names to custom names
+    column_name_mapping = {
+        'name': 'Student Name',
+        'roll_no': 'Student ID',
+        'gender': 'Gender',
+        'address': 'Address',
+        'dob': 'Date of Birth',
+        'contact_no': 'Contact Number',
+        'year': 'Academic Year',
+        'branch': 'Branch',
+        'hostel_id': 'Hostel ID',
+        'flat': 'Flat',
+        'room': 'Room',
+    }
+
+    # Apply the mapping
+    column_names = [[column_name_mapping.get(col[0], col[0])] for col in column_names]
+
     c.close()
     if(request.get_cookie("user")!='0'):
-        column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        # column_names=[['name'],['roll_no'],['year'],['branch'],['hostel_id'],['flat'],['room']]
+        column_names = [['Student Name'], ['Student ID'], ['Academic Year'], ['Branch'], ['Hostel ID'], ['Flat'], ['Room']]
 
     output = template('tpl/namesearch_student', rows=result,columns=column_names)
     return output

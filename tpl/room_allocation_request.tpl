@@ -8,10 +8,10 @@
       <!-- The hidden field "10" = "1" indicates creation of a new record -->
       <input type="hidden" name="10" value="1" />
 
-      <label for="sroll">Roll no.</label>
+      <label for="sroll">Student ID</label>
       <input class="u-full-width" type="number" id="sroll" max="999999999" name="1" />
 
-      <label for="hostel_id">Hostel ID</label>
+      <label for="hostel_id">Dormitory ID</label>
       <input class="u-full-width" type="number" id="hostel_id" name="2" />
 
       <label for="flat">Flat</label>
@@ -36,14 +36,14 @@
       <!-- The hidden field "10" = "2" indicates an update -->
       <input type="hidden" name="10" value="2" />
 
-      <label for="sroll2">Roll no.</label>
+      <label for="sroll2">Student ID</label>
       <input class="u-full-width" type="number" id="sroll2" max="999999999" name="1"/>
 
       <label for="reqid">Request ID</label>
       <input class="u-full-width" type="number" id="reqid" max="999999999" name="2"/>
 
       <!-- If admin wants to update the hostel_id, fill it in, else leave blank -->
-      <label for="hostel_id2">Hostel ID (leave blank if no change)</label>
+      <label for="hostel_id2">Dormitory ID (leave blank if no change)</label>
       <input class="u-full-width" type="number" id="hostel_id2" name="h_id" />
 
       <label for="flat2">Flat (leave blank if no change)</label>
@@ -71,7 +71,7 @@
       <!-- The hidden field "10" = "3" indicates we are searching -->
       <input type="hidden" name="10" value="3" />
 
-      <label for="croll">Roll no. filter</label>
+      <label for="croll">Student ID no. filter</label>
       <select class="u-full-width" id="croll" name="5">
         <option value="0">Any</option>
         <option value="1">Specific</option>
