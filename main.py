@@ -245,6 +245,7 @@ def room_allocation_request_post():
                 SELECT column_name
                 FROM information_schema.columns
                 WHERE table_name='roomregistration' AND table_schema='hms'
+                ORDER BY ordinal_position
             """)
             column_names = c.fetchall()
 
@@ -312,6 +313,7 @@ def room_allocation_request_post():
                 SELECT column_name
                 FROM information_schema.columns
                 WHERE table_name='roomregistration' AND table_schema='hms'
+                ORDER BY ordinal_position
             """)
             column_names = c.fetchall()
 
@@ -347,6 +349,7 @@ def room_allocation_request_post():
                 SELECT column_name
                 FROM information_schema.columns
                 WHERE table_name='roomregistration' AND table_schema='hms'
+                ORDER BY ordinal_position
             """)
             column_names = c.fetchall()
 
@@ -429,7 +432,7 @@ def show_students():
     
     c.execute("SELECT * FROM student ")
     result = c.fetchall()
-    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
 
     # Map database column names to custom names
@@ -474,7 +477,7 @@ def show_hostel():
     c = cnx.cursor()
     
     try:
-        c.execute("SELECT column_name from information_schema.columns where table_name='hostel' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='hostel' and table_schema='hms' ORDER BY ordinal_position")
     except mysql.connector.Error as err:
         return ("Failed fetching column names of table hms.hostel, please make sure that it exists: {}".format(err))
     column_names = c.fetchall()
@@ -540,7 +543,7 @@ def update_gate_record_post():
         except mysql.connector.Error as err:
             return ("Failed fetching gate_record from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -566,7 +569,7 @@ def update_gate_record_post():
         except mysql.connector.Error as err:
             return ("Failed fetching gate_record from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -593,9 +596,9 @@ def update_gate_record_post():
             return ("Failed fetching from  gate record case 3 from database: {}".format(err))
         result = c.fetchall()
 
-        c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='gate_record' and table_schema='hms' ORDER BY ordinal_position")
         column_names+=c.fetchall()
 
         column_names=list(unique_everseen(column_names))
@@ -642,7 +645,7 @@ def event_get():
         except mysql.connector.Error as err:
             return ("Failed getting custom (user) event from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms' ")
+        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         # Map database column names to custom names
         column_name_mapping = {
@@ -699,7 +702,7 @@ def event_post():
         except mysql.connector.Error as err:
             return ("Failed fetching from  event 1 from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         # Map database column names to custom names
         column_name_mapping = {
@@ -748,7 +751,7 @@ def event_post():
         except mysql.connector.Error as err:
             return ("Failed show_it from  event from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='event' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         # Map database column names to custom names
         column_name_mapping = {
@@ -807,7 +810,7 @@ def courier_get():
         except mysql.connector.Error as err:
             return ("Failed getting custom (user) courier from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -844,7 +847,7 @@ def courier_post():
         except mysql.connector.Error as err:
             return ("Failed fetching from  courier from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -870,7 +873,7 @@ def courier_post():
         except mysql.connector.Error as err:
             return ("Failed fetching courier from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -906,7 +909,7 @@ def courier_post():
         except mysql.connector.Error as err:
             return ("Failed show_it from  courier from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='courier' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -966,7 +969,7 @@ def complaint_post():
         except mysql.connector.Error as err:
             return ("Failed fetching from  complaint from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         # Map database column names to custom names
         column_name_mapping = {
@@ -1003,7 +1006,7 @@ def complaint_post():
         except mysql.connector.Error as err:
             return ("Failed fetching complaint from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         column_name_mapping = {
             'complaint_id': 'Complaint ID',
@@ -1045,7 +1048,7 @@ def complaint_post():
         except mysql.connector.Error as err:
             return ("Failed show_it from  complaint from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='complaint' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         column_name_mapping = {
             'complaint_id': 'Complaint ID',
@@ -1108,7 +1111,7 @@ def update_visitor_post():
         except mysql.connector.Error as err:
             return ("Failed fetching from  visitor from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -1134,7 +1137,7 @@ def update_visitor_post():
         except mysql.connector.Error as err:
             return ("Failed fetching visitor from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -1172,7 +1175,7 @@ def update_visitor_post():
         except mysql.connector.Error as err:
             return ("Failed fetching from  visitor from database: {}".format(err))
         result = c.fetchall()
-        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms'")
+        c.execute("SELECT column_name from information_schema.columns where table_name='visitor' and table_schema='hms' ORDER BY ordinal_position")
         column_names=c.fetchall()
         c.close()
 
@@ -1338,7 +1341,7 @@ def update_post():
     except mysql.connector.Error as err:
         return ("Failed fetching from  student from database: {}".format(err))
     result = c.fetchall()
-    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
     c.close()
 
@@ -1377,7 +1380,7 @@ def namesearch_emp():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
     column_name_mapping = {
             'address': 'Address',
@@ -1413,7 +1416,7 @@ def idsearch_emp():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
     column_name_mapping = {
             'address': 'Address',
@@ -1459,7 +1462,7 @@ def hd_emp():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='employee' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
     column_name_mapping = {
             'address': 'Address',
@@ -1512,7 +1515,7 @@ def namesearch_student():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
 
     # Map database column names to custom names
@@ -1560,7 +1563,7 @@ def rollsearch_student():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
     # Map database column names to custom names
     column_name_mapping = {
@@ -1660,7 +1663,7 @@ def roomsearch_student():
 
     result=c.fetchall()
 
-    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms'")
+    c.execute("SELECT column_name from information_schema.columns where table_name='student' and table_schema='hms' ORDER BY ordinal_position")
     column_names=c.fetchall()
 
     # Map database column names to custom names
